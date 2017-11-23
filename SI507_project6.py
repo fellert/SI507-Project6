@@ -8,7 +8,7 @@ from csv import DictReader
 
 
 # Write code / functions to set up database connection and cursor here.
-conn = psycopg2.connect("dbname='fellert_507project6' user='ethanellert'")
+conn = psycopg2.connect("dbname='fellert_507project6' user=''")
 cur = conn.cursor()
 
 # Write code / functions to create tables with the columns you want and all database setup here.
