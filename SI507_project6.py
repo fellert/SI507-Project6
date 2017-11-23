@@ -7,12 +7,14 @@ import psycopg2.extras
 from csv import DictReader
 
 
-# Write code / functions to set up database connection and cursor here.
+# Functions to set up database connection and cursor here.
 conn = psycopg2.connect("dbname='fellert_507project6' user=''")
 cur = conn.cursor()
 
-# Write code / functions to create tables with the columns you want and all database setup here.
+# Functions to create tables with the columns you want and all database setup here.
 def create_tables():
+    # Drop both tables so we don't try to insert info that already exists when running
+    # the program a second+ time 
     cur.execute("DROP TABLE IF EXISTS Sites")
     cur.execute("DROP TABLE IF EXISTS States")
     commands = (
@@ -36,9 +38,10 @@ def create_tables():
     for command in commands:
         cur.execute(command)
 
+# Runs to function above to creat tables (or drop and recreate them if they already exist)
 create_tables()
 
-
+# Inserts the state and uses the ID returned to insert the sites for that state
 def insert_site(sites, state_name):
     reader = DictReader(open(sites, 'r'))
     cur.execute("INSERT INTO States (Name) VALUES (%s) RETURNING ID", (state_name,))
@@ -51,6 +54,7 @@ def insert_site(sites, state_name):
 insert_site('arkansas.csv', 'Arkansas')
 insert_site('california.csv', 'California')
 insert_site('michigan.csv', 'Michigan')
+# Commit the changes
 conn.commit()
 
 # Printer function that is used for three queries below
@@ -78,6 +82,8 @@ print("########## COUNT OF SITE THAT ARE TYPE 'NATIONAL LAKESHORE' ##########")
 print(result[0][0])
 print('\n')
 
+# I had to use Sties.name because use just "Name" throws an error as both tables used the "Name" variable
+# The program calls this ambiguous becuase it is not sure which table to pull from
 michigan_names = cur.execute(""" SELECT Sites.Name FROM Sites INNER JOIN States ON (Sites.State_ID = States.ID) \
                                  WHERE States.Name = 'Michigan' """)
 result = cur.fetchall()
@@ -91,4 +97,5 @@ result = cur.fetchall()
 print("########## TOTAL SITES IN ARKANSAS ##########")
 print(result[0][0])
 
+# Close the connection
 conn.close()
