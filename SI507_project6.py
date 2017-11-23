@@ -27,7 +27,7 @@ def create_tables():
             ID SERIAL PRIMARY KEY,
             Name VARCHAR(128) UNIQUE,
             Type VARCHAR(128),
-            State_ID INTEGER REFERENCES States(ID),
+            State_ID INTEGER REFERENCES States(ID) ON DELETE CASCADE,
             Location VARCHAR(255),
             Description TEXT
         )
@@ -37,6 +37,7 @@ def create_tables():
         cur.execute(command)
 
 create_tables()
+
 
 def insert_site(sites, state_name):
     reader = DictReader(open(sites, 'r'))
