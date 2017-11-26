@@ -4,17 +4,21 @@
 # Import statements
 import psycopg2
 import psycopg2.extras
+from config import *
 from csv import DictReader
 
 
+
 # Functions to set up database connection and cursor here.
-conn = psycopg2.connect("dbname='fellert_507project6' user=''")
+# Both the database name and user are imported from the config file, which
+# is currently set up with db_name = fellert_507project6 and an empty user
+conn = psycopg2.connect("dbname='{0}' user= '{1}'".format(db_name,db_user))
 cur = conn.cursor()
 
 # Functions to create tables with the columns you want and all database setup here.
 def create_tables():
     # Drop both tables so we don't try to insert info that already exists when running
-    # the program a second+ time 
+    # the program a second+ time
     cur.execute("DROP TABLE IF EXISTS Sites")
     cur.execute("DROP TABLE IF EXISTS States")
     commands = (
